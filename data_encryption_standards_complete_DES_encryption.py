@@ -2,14 +2,16 @@
 import random
 
 
-def random_generator():                                     # for generate randomly 64 bit key and plain text
+def random_generator():
+    """for generate randomly 64 bit key and plain text"""
     text = ""
     for i in range(64):
         text += str(random.randint(0, 1))
     return text
 
 
-def permuted_choice_1(initial_key):                         # for permuted choice 1 64 bit
+def permuted_choice_1(initial_key):
+    """for permuted choice 1 64 bit"""
     pc1_table = [57, 49, 41, 33, 25, 17, 9,
                  1, 58, 50, 42, 34, 26, 18,
                  10, 2, 59, 51, 43, 35, 27,
@@ -24,14 +26,16 @@ def permuted_choice_1(initial_key):                         # for permuted choic
     return pc1
 
 
-def left_shift(original, count):                            # for left shift (32 bit)
+def left_shift(original, count):
+    """for left shift (32 bit)"""
     if count == 1 or count == 2 or count == 9 or count == 16:
         return original[1:] + original[0]
     else:
         return original[2:] + original[:2]
 
 
-def permuted_choice_2(cd):                                  # for permuted choice 2 56 bit
+def permuted_choice_2(cd):
+    """for permuted choice 2 56 bit"""
     pc2_table = [14, 17, 11, 24, 1, 5,
                  3, 28, 15, 6, 21, 10,
                  23, 19, 12, 4, 26, 8,
@@ -46,7 +50,8 @@ def permuted_choice_2(cd):                                  # for permuted choic
     return pc2
 
 
-def initial_permutation(plain_text):                        # for initial permutation (64 bit plain text)
+def initial_permutation(plain_text):
+    """for initial permutation (64 bit plain text)"""
     permuted_text = ""
     for i in range(8):
         if i <= 3:
@@ -59,7 +64,8 @@ def initial_permutation(plain_text):                        # for initial permut
     return permuted_text
 
 
-def expansion_permutation(right32):                         # for convert from right 32 bit to 48 bit
+def expansion_permutation(right32):
+    """for convert from right 32 bit to 48 bit"""
     right32 = right32[-1]+right32+right32[0]
     ep = ""
     for i in range(1, 32, 4):
@@ -67,7 +73,8 @@ def expansion_permutation(right32):                         # for convert from r
     return ep
 
 
-def xor_box(pt_bits1, ptk_bits2):                           # for 48 bit & 32 bit XOR
+def xor_box(pt_bits1, ptk_bits2):
+    """for 48 bit & 32 bit XOR"""
     length = len(pt_bits1)
     xor_bits = ""
     for i in range(length):
@@ -78,7 +85,8 @@ def xor_box(pt_bits1, ptk_bits2):                           # for 48 bit & 32 bi
     return xor_bits
 
 
-def substitution_box(xor_bits):                             # compressing 48 bits to 32 bits using substitution box
+def substitution_box(xor_bits):
+    """compressing 48 bits to 32 bits using substitution box"""
     sb_table = [[14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
                 0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8,
                 4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
@@ -133,7 +141,8 @@ def substitution_box(xor_bits):                             # compressing 48 bit
     return sb
 
 
-def straight_permutation(s32):                              # for straight permutation (32 bit)
+def straight_permutation(s32):
+    """for straight permutation (32 bit)"""
     sp_table = [16, 7, 20, 21, 29, 12, 28, 17,
                 1, 15, 23, 26, 5, 18, 31, 10,
                 2, 8, 24, 14, 32, 27, 3, 9,
@@ -144,7 +153,8 @@ def straight_permutation(s32):                              # for straight permu
     return sp
 
 
-def final_permutation(merge_string):                        # for final permutation (64 bit)
+def final_permutation(merge_string):
+    """for final permutation (64 bit)"""
     fp_table = [40, 8, 48, 16, 56, 24, 64, 32,
                 39, 7, 47, 15, 55, 23, 63, 31,
                 38, 6, 46, 14, 54, 22, 62, 30,
@@ -160,6 +170,7 @@ def final_permutation(merge_string):                        # for final permutat
 
 
 def encryption(plain_text, initial_key):
+    """for controlling flow and call the all methods"""
     pc1 = permuted_choice_1(initial_key)
     rd = initial_permutation(plain_text)
     c = pc1[:28]
@@ -180,14 +191,15 @@ def encryption(plain_text, initial_key):
     return ct
 
 
-choice = input("Press-> 1: Randomly generate 64 bit plain text and key\t\tOthers: User input 64 bit plain text and key\
-               \nEnter your choice: ")
-if choice == "1":
-    pt = random_generator()
-    k = random_generator()
-    print(f"\nRandomly generated plain text is:\n{pt}\nRandomly generated key is:\n{k}")
-else:
-    pt = input("\nEnter 64 bit plain text:\n")
-    k = input("Enter 64 bit key:\n")
-cipher_text = encryption(pt, k)
-print(f"\nAfter encryption in DES algorithm the cipher text is:\n{cipher_text}")
+if __name__ == '__main__':
+    print("Press-> 1: Randomly generate 64 bit plain text and key\t\tOthers: User input 64 bit plain text and key")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        pt = random_generator()
+        k = random_generator()
+        print(f"\nRandomly generated plain text is:\n{pt}\nRandomly generated key is:\n{k}")
+    else:
+        pt = input("\nEnter 64 bit plain text:\n")
+        k = input("Enter 64 bit key:\n")
+    cipher_text = encryption(pt, k)
+    print(f"\nAfter encryption in DES algorithm the cipher text is:\n{cipher_text}")
